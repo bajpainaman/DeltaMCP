@@ -310,15 +310,8 @@ async def format_git_diff_cli(
     line_numbers: bool = True
 ) -> str:
     """
-    Format git diff output using Delta - CLI only (no browser).
-    Designed for terminal/CLI environments that support ANSI codes.
-    
-    Returns ANSI-colored terminal output. The output contains ANSI escape codes
-    for syntax highlighting and colors. 
-    
-    NOTE: Claude Code does not render ANSI codes in tool responses - they will appear
-    as escaped JSON (e.g., \\u001b[34m). For colored output in Claude Code, use the
-    browser mode tools (format_git_diff without cli_mode) instead.
+    Format git diff output using Delta - CLI mode with HTML rendering for Claude Code.
+    Converts ANSI codes to HTML so colors display properly in Claude Code.
     
     Args:
         file_path: Specific file to diff (optional, diffs all if not provided)
@@ -329,11 +322,10 @@ async def format_git_diff_cli(
         line_numbers: Show line numbers (default: True)
     
     Returns:
-        ANSI-colored terminal-formatted diff output (CLI only, no browser links).
-        Contains ANSI escape codes for colors and formatting. These codes will render
-        correctly in terminals that support ANSI, but may appear escaped in some UIs.
+        HTML-formatted diff output with colors preserved for Claude Code rendering.
     """
-    return await format_git_diff(
+    # Get the ANSI-formatted output
+    ansi_output = await format_git_diff(
         file_path=file_path,
         commit_range=commit_range,
         staged=staged,
@@ -342,6 +334,13 @@ async def format_git_diff_cli(
         line_numbers=line_numbers,
         open_in_browser=False  # CLI only
     )
+    
+    # Convert ANSI codes to HTML for Claude Code rendering
+    from browser_utils import _ansi_to_html
+    html_output = _ansi_to_html(ansi_output)
+    
+    # Wrap in a simple HTML structure with monospace font for proper display
+    return f'<pre style="font-family: monospace; font-size: 12px; line-height: 1.4; background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 4px; overflow-x: auto;">{html_output}</pre>'
 
 
 @mcp.tool()

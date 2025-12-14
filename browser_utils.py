@@ -15,14 +15,15 @@ CACHE_DIR.mkdir(exist_ok=True)
 
 
 def _ansi_to_html(ansi_text: str) -> str:
-    """Convert ANSI color codes to HTML with inline styles."""
+    """Convert ANSI color codes to HTML with inline styles.
+    Properly handles 256-color codes (38;5;X and 48;5;X) used by delta."""
     # Escape HTML first
     html_text = html.escape(ansi_text)
     
-    # Pattern for ANSI escape sequences
+    # Pattern for ANSI escape sequences (including 256-color codes)
     ansi_pattern = re.compile(r'\x1b\[([0-9;]+)m')
     
-    # Color mapping
+    # Basic 8/16 color mapping
     color_map = {
         30: '#000000', 31: '#cd3131', 32: '#0dbc79', 33: '#e5e510',
         34: '#2472c8', 35: '#bc3fbc', 36: '#11a8cd', 37: '#e5e5e5',
@@ -37,7 +38,32 @@ def _ansi_to_html(ansi_text: str) -> str:
         104: '#3b8eea', 105: '#d670d6', 106: '#29b8db', 107: '#e5e5e5',
     }
     
+    def ansi256_to_hex(color_code: int) -> str:
+        """Convert 256-color ANSI code to hex color."""
+        if 0 <= color_code <= 15:
+            # Standard colors
+            standard = ['#000000', '#800000', '#008000', '#808000',
+                       '#000080', '#800080', '#008080', '#c0c0c0',
+                       '#808080', '#ff0000', '#00ff00', '#ffff00',
+                       '#0000ff', '#ff00ff', '#00ffff', '#ffffff']
+            return standard[color_code]
+        elif 16 <= color_code <= 231:
+            # 6x6x6 color cube
+            r = (color_code - 16) // 36
+            g = ((color_code - 16) % 36) // 6
+            b = (color_code - 16) % 6
+            r = 55 + r * 40 if r > 0 else 0
+            g = 55 + g * 40 if g > 0 else 0
+            b = 55 + b * 40 if b > 0 else 0
+            return f'#{r:02x}{g:02x}{b:02x}'
+        elif 232 <= color_code <= 255:
+            # Grayscale
+            gray = 8 + (color_code - 232) * 10
+            return f'#{gray:02x}{gray:02x}{gray:02x}'
+        return '#ffffff'
+    
     parts = []
+    span_stack = []  # Track open spans for proper nesting
     last_pos = 0
     
     for match in ansi_pattern.finditer(html_text):
@@ -47,27 +73,61 @@ def _ansi_to_html(ansi_text: str) -> str:
         codes_str = match.group(1)
         codes = [int(c) if c else 0 for c in codes_str.split(';')]
         
-        styles = []
-        for code in codes:
-            if code == 0:  # Reset
-                parts.append('</span>')
-                styles = []
+        i = 0
+        while i < len(codes):
+            code = codes[i]
+            
+            if code == 0:  # Reset - close all open spans
+                while span_stack:
+                    parts.append('</span>')
+                    span_stack.pop()
             elif code == 1:  # Bold
-                styles.append('font-weight: bold')
+                styles = ['font-weight: bold']
+                parts.append(f'<span style="{"; ".join(styles)}">')
+                span_stack.append(styles)
             elif code == 4:  # Underline
-                styles.append('text-decoration: underline')
+                styles = ['text-decoration: underline']
+                parts.append(f'<span style="{"; ".join(styles)}">')
+                span_stack.append(styles)
+            elif code == 7:  # Reverse video (invert)
+                # Skip for now
+                pass
             elif code in color_map:
-                styles.append(f'color: {color_map[code]}')
+                styles = [f'color: {color_map[code]}']
+                parts.append(f'<span style="{"; ".join(styles)}">')
+                span_stack.append(styles)
             elif code in bg_color_map:
-                styles.append(f'background-color: {bg_color_map[code]}')
-        
-        if styles:
-            parts.append(f'<span style="{"; ".join(styles)}">')
+                styles = [f'background-color: {bg_color_map[code]}']
+                parts.append(f'<span style="{"; ".join(styles)}">')
+                span_stack.append(styles)
+            elif code == 38 and i + 2 < len(codes) and codes[i+1] == 5:
+                # 256-color foreground: 38;5;X
+                color_code = codes[i+2]
+                hex_color = ansi256_to_hex(color_code)
+                styles = [f'color: {hex_color}']
+                parts.append(f'<span style="{"; ".join(styles)}">')
+                span_stack.append(styles)
+                i += 2  # Skip the next two codes
+            elif code == 48 and i + 2 < len(codes) and codes[i+1] == 5:
+                # 256-color background: 48;5;X
+                color_code = codes[i+2]
+                hex_color = ansi256_to_hex(color_code)
+                styles = [f'background-color: {hex_color}']
+                parts.append(f'<span style="{"; ".join(styles)}">')
+                span_stack.append(styles)
+                i += 2  # Skip the next two codes
+            
+            i += 1
         
         last_pos = match.end()
     
     if last_pos < len(html_text):
         parts.append(html_text[last_pos:])
+    
+    # Close any remaining open spans
+    while span_stack:
+        parts.append('</span>')
+        span_stack.pop()
     
     result = ''.join(parts)
     return f'<pre style="font-family: \'SF Mono\', Monaco, \'Cascadia Code\', Consolas, monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; line-height: 1.5;">{result}</pre>'

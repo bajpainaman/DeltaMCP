@@ -15,7 +15,7 @@
     
     # Unified diff format (not side-by-side) - matches GitHub
     # Set to true only if you want side-by-side view
-    side-by-side = false
+    side-by-side = true
     
     # Hyperlinks for commit hashes and file paths
     hyperlinks = true

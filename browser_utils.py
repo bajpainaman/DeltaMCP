@@ -259,7 +259,7 @@ def create_terminal_hyperlink(text: str, uri: str) -> str:
 
 def format_with_terminal_link(formatted_output: str, file_url: str, title: str) -> str:
     """
-    Format output with a terminal hyperlink at the top and bottom.
+    Format output with terminal hyperlinks side-by-side at the top.
     Returns clean terminal output that looks like native delta, with clickable browser links.
     
     Args:
@@ -268,19 +268,18 @@ def format_with_terminal_link(formatted_output: str, file_url: str, title: str) 
         title: Title/description of the diff
     
     Returns:
-        Formatted string with clickable terminal hyperlinks - clean terminal-style output
+        Formatted string with clickable terminal hyperlinks side-by-side - clean terminal-style output
         that works in both CLI and browser
     """
     # Create clickable link using OSC 8 (works in terminal, also shows URL for copy-paste)
     link_text = f"View in browser: {title}"
     terminal_link = create_terminal_hyperlink(link_text, file_url)
     
-    # Return clean output: 
-    # - Clickable link at top (OSC 8 hyperlink)
+    # Return clean output with side-by-side links:
+    # - Two clickable links side-by-side at top (OSC 8 hyperlinks)
     # - Clean formatted diff (looks exactly like native delta CLI output)
-    # - Clickable link at bottom
-    # - Also include plain URL for easy copy-paste
-    result = f"{terminal_link}\n\n{formatted_output}\n\n{terminal_link}\n\nBrowser URL: {file_url}"
+    # - Plain URL for easy copy-paste
+    result = f"{terminal_link}  |  {terminal_link}\n\n{formatted_output}\n\nBrowser URL: {file_url}"
     
     return result
 

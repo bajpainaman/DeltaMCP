@@ -312,10 +312,13 @@ async def format_git_diff_cli(
     theme: str | None = None,
     side_by_side: bool = True,
     line_numbers: bool = True
-) -> dict:
+) -> str:
     """
     Format git diff output using Delta - CLI mode with ANSI codes for Claude Code.
-    Returns ANSI escape codes that Claude Code's terminal will render with colors.
+    Returns raw ANSI escape codes that Claude Code's terminal will render with colors.
+    
+    Claude Code automatically renders ANSI escape sequences from MCP tool outputs.
+    Just return the ANSI codes directly - no special formatting needed.
     
     Args:
         file_path: Specific file to diff (optional, diffs all if not provided)
@@ -326,10 +329,11 @@ async def format_git_diff_cli(
         line_numbers: Show line numbers (default: True)
     
     Returns:
-        MCP content array with ANSI-colored text that Claude Code will render.
+        Raw ANSI-colored terminal output. Claude Code will render the colors automatically.
     """
-    # Get the ANSI-formatted output (raw ANSI escape codes)
-    ansi_output = await format_git_diff(
+    # Get the ANSI-formatted output (raw ANSI escape codes from delta)
+    # FastMCP will wrap this in the MCP content array format automatically
+    return await format_git_diff(
         file_path=file_path,
         commit_range=commit_range,
         staged=staged,
@@ -338,16 +342,6 @@ async def format_git_diff_cli(
         line_numbers=line_numbers,
         open_in_browser=False  # CLI only
     )
-    
-    # Return in MCP content array format - Claude Code will render ANSI codes
-    return {
-        "content": [
-            {
-                "type": "text",
-                "text": ansi_output
-            }
-        ]
-    }
 
 
 @mcp.tool()

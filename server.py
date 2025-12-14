@@ -313,6 +313,10 @@ async def format_git_diff_cli(
     Format git diff output using Delta - CLI only (no browser).
     Designed for Claude Code and other CLI-focused clients.
     
+    Returns ANSI-colored terminal output. The output contains ANSI escape codes
+    for syntax highlighting and colors. When displayed in a terminal or terminal
+    emulator that supports ANSI codes, the output will be properly colored.
+    
     Args:
         file_path: Specific file to diff (optional, diffs all if not provided)
         commit_range: Git commit range (e.g., "HEAD~1..HEAD" or "abc123..def456")
@@ -322,7 +326,8 @@ async def format_git_diff_cli(
         line_numbers: Show line numbers (default: True)
     
     Returns:
-        Clean terminal-formatted diff output (CLI only, no browser links)
+        ANSI-colored terminal-formatted diff output (CLI only, no browser links).
+        Contains ANSI escape codes for colors and formatting.
     """
     return await format_git_diff(
         file_path=file_path,

@@ -55,7 +55,7 @@ async def format_git_show(
     commit_hash: str,
     file_path: str | None = None,
     theme: str | None = None,
-    side_by_side: bool = False,
+    side_by_side: bool = False,  # Default: unified diff format (like GitHub)
     line_numbers: bool = True,
     open_in_browser: bool = True
 ) -> str:
@@ -107,6 +107,7 @@ async def format_git_show(
         git_cmd.append(validated_path)
     
     # Build delta command with config
+    # Default to unified diff format (like GitHub) unless side-by-side is explicitly requested
     delta_cmd = ["delta"]
     # Only add theme if explicitly provided - otherwise delta uses user's config/default
     if theme:
@@ -114,6 +115,7 @@ async def format_git_show(
     elif merged_config.get("syntax-theme"):
         # Use theme from user's git config if available
         delta_cmd.extend(["--syntax-theme", merged_config.get("syntax-theme")])
+    # Only use side-by-side if explicitly requested (default is unified like GitHub)
     if side_by_side or merged_config.get("side-by-side"):
         delta_cmd.append("--side-by-side")
     if line_numbers or merged_config.get("line-numbers", True):
@@ -162,7 +164,9 @@ async def format_git_log(
     open_in_browser: bool = True
 ) -> str:
     """
-    Format git log with patches using Delta. Opens in browser by default for better viewing.
+    Format git log with patches using Delta. 
+    Returns clean terminal-style output (like native delta CLI) with optional browser links.
+    Works in both CLI and browser - output looks like native delta with clickable browser links.
     
     Args:
         limit: Number of commits to show (default: 10)
@@ -170,13 +174,13 @@ async def format_git_log(
         since: Show commits after this date (ISO format or relative)
         until: Show commits before this date (ISO format or relative)
         file_path: Filter commits that touch this file
-        theme: Syntax highlighting theme
+        theme: Syntax highlighting theme (optional - any bat/delta theme name, uses your config default if not specified)
         side_by_side: Enable side-by-side diff view
         line_numbers: Show line numbers
-        open_in_browser: If True (default), opens in browser and returns URL; if False, returns formatted text
+        open_in_browser: If True (default), includes clickable browser links; if False, returns only formatted text
     
     Returns:
-        Browser URL (default) or formatted git log output if open_in_browser=False
+        Clean terminal-formatted git log output with browser links (if open_in_browser=True) or plain formatted text
     """
     if not await ensure_delta_available():
         return "Error: Delta not installed. Install with: cargo install git-delta"
@@ -275,7 +279,9 @@ async def format_git_diff(
     open_in_browser: bool = True
 ) -> str:
     """
-    Format git diff output using Delta with syntax highlighting. Opens in browser by default for better viewing.
+    Format git diff output using Delta with syntax highlighting. 
+    Returns clean terminal-style output (like native delta CLI) with optional browser links.
+    Works in both CLI and browser - output looks like native delta with clickable browser links.
     
     Args:
         file_path: Specific file to diff (optional, diffs all if not provided)
@@ -284,10 +290,10 @@ async def format_git_diff(
         theme: Syntax highlighting theme (optional - any bat/delta theme name, uses your config default if not specified)
         side_by_side: Enable side-by-side diff view
         line_numbers: Show line numbers
-        open_in_browser: If True (default), opens in browser and returns URL; if False, returns formatted text
+        open_in_browser: If True (default), includes clickable browser links; if False, returns only formatted text
     
     Returns:
-        Browser URL (default) or formatted diff text if open_in_browser=False
+        Clean terminal-formatted diff output with browser links (if open_in_browser=True) or plain formatted text
     """
     if not await ensure_delta_available():
         return "Error: Delta not installed. Install with: cargo install git-delta"

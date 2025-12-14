@@ -1,18 +1,21 @@
 # Example Delta configuration for Git config file
 # Add this to your ~/.gitconfig file
+# This config produces GitHub-like unified diff format (not side-by-side)
 
 [delta]
     # Syntax highlighting theme (from bat)
+    # Use "github" theme to match GitHub's style
     syntax-theme = "github"
     
-    # Features
-    features = "side-by-side line-numbers decorations"
+    # Features - unified diff format (like GitHub)
+    features = "line-numbers decorations"
     
-    # Line numbers
+    # Line numbers (GitHub-style on the left)
     line-numbers = true
     
-    # Side-by-side view
-    side-by-side = true
+    # Unified diff format (not side-by-side) - matches GitHub
+    # Set to true only if you want side-by-side view
+    side-by-side = false
     
     # Hyperlinks for commit hashes and file paths
     hyperlinks = true

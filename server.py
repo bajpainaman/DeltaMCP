@@ -60,7 +60,8 @@ async def format_git_show(
     open_in_browser: bool = True
 ) -> str:
     """
-    Format git show output using Delta with syntax highlighting. Opens in browser by default for better viewing.
+    Format git show output using Delta with syntax highlighting. 
+    Returns clean terminal-style output (like native delta CLI) with optional browser links.
     
     Args:
         commit_hash: Git commit hash or reference (e.g., "HEAD", "abc123")
@@ -68,10 +69,10 @@ async def format_git_show(
         theme: Syntax highlighting theme (optional - any bat/delta theme name, uses your config default if not specified)
         side_by_side: Enable side-by-side diff view
         line_numbers: Show line numbers
-        open_in_browser: If True (default), opens in browser and returns URL; if False, returns formatted text
+        open_in_browser: If True (default), includes clickable browser links; if False, returns only formatted text
     
     Returns:
-        Browser URL (default) or formatted commit output if open_in_browser=False
+        Clean terminal-formatted diff output with browser links (if open_in_browser=True) or plain formatted text
     """
     if not await ensure_delta_available():
         return "Error: Delta not installed. Install with: cargo install git-delta"
@@ -137,7 +138,8 @@ async def format_git_show(
         except Exception as e:
             logger.warning(f"Could not open browser: {e}")
         
-        # Return with terminal hyperlink (OSC 8) - clickable in terminal!
+        # Return clean terminal output with clickable hyperlink
+        # Format: clean diff output + clickable link at top and bottom
         return format_with_terminal_link(formatted_output, browser_url, title)
     
     return formatted_output

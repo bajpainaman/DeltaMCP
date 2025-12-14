@@ -1,6 +1,6 @@
 # Delta MCP Server
 
-A Model Context Protocol server that brings git-delta's beautiful syntax highlighting and diff formatting to AI assistants like Cursor, Claude Desktop, and Warp. Instead of plain text diffs, you get colorized, syntax-highlighted output that makes code reviews and debugging much easier.
+A Model Context Protocol server that brings git-delta's beautiful syntax highlighting and diff formatting to AI assistants like Cursor, Claude Code, Claude Desktop, and Warp. Instead of plain text diffs, you get clean terminal-style colorized output that looks exactly like native delta, with the added benefit of clickable browser links for better viewing.
 
 ## What This Does
 
@@ -22,7 +22,7 @@ For development setup, start by installing uv if you don't have it already. Then
 
 Delta uses Git's configuration format, so you configure it by adding a `[delta]` section to your `~/.gitconfig` file. You can set the syntax theme, enable side-by-side view, turn on line numbers, and configure other options. There's an example configuration file in the `config` directory that shows all the available options.
 
-For MCP client configuration, you'll need to add the server to your client's configuration file. The exact location depends on which client you're using. For Claude Desktop, it's in the Application Support directory. For Cursor, you can use the UI-based setup in Settings, or manually edit the configuration file. Warp uses a similar JSON configuration format.
+For MCP client configuration, you'll need to add the server to your client's configuration file. The exact location depends on which client you're using. For Claude Desktop, it's in the Application Support directory. For Claude Code, use the MCP settings in the application. For Cursor, you can use the UI-based setup in Settings, or manually edit the configuration file. Warp uses a similar JSON configuration format. Example configuration files are provided in the examples directory for each client.
 
 The key thing to remember is to use absolute paths, not relative ones. On Windows, make sure to use double backslashes or forward slashes in your paths. After making configuration changes, you need to fully quit and restart your client, not just close the window.
 

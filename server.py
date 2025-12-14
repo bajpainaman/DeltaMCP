@@ -311,11 +311,14 @@ async def format_git_diff_cli(
 ) -> str:
     """
     Format git diff output using Delta - CLI only (no browser).
-    Designed for Claude Code and other CLI-focused clients.
+    Designed for terminal/CLI environments that support ANSI codes.
     
     Returns ANSI-colored terminal output. The output contains ANSI escape codes
-    for syntax highlighting and colors. When displayed in a terminal or terminal
-    emulator that supports ANSI codes, the output will be properly colored.
+    for syntax highlighting and colors. 
+    
+    NOTE: Claude Code does not render ANSI codes in tool responses - they will appear
+    as escaped JSON (e.g., \\u001b[34m). For colored output in Claude Code, use the
+    browser mode tools (format_git_diff without cli_mode) instead.
     
     Args:
         file_path: Specific file to diff (optional, diffs all if not provided)
@@ -327,7 +330,8 @@ async def format_git_diff_cli(
     
     Returns:
         ANSI-colored terminal-formatted diff output (CLI only, no browser links).
-        Contains ANSI escape codes for colors and formatting.
+        Contains ANSI escape codes for colors and formatting. These codes will render
+        correctly in terminals that support ANSI, but may appear escaped in some UIs.
     """
     return await format_git_diff(
         file_path=file_path,

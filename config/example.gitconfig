@@ -1,0 +1,35 @@
+# Example Delta configuration for Git config file
+# Add this to your ~/.gitconfig file
+
+[delta]
+    # Syntax highlighting theme (from bat)
+    syntax-theme = "github"
+    
+    # Features
+    features = "side-by-side line-numbers decorations"
+    
+    # Line numbers
+    line-numbers = true
+    
+    # Side-by-side view
+    side-by-side = true
+    
+    # Hyperlinks for commit hashes and file paths
+    hyperlinks = true
+    
+    # Navigation (for interactive use, not applicable in MCP)
+    # navigate = true
+    
+    # Style customizations
+    minus-style = "red bold"
+    plus-style = "green bold"
+    zero-style = "syntax"
+    
+    # File decorations
+    file-decoration-style = "blue ul"
+    file-style = "bold yellow ul"
+    
+    # Hunk decorations
+    hunk-header-decoration-style = "blue box"
+    hunk-header-style = "file-line-number"
+

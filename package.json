@@ -1,0 +1,12 @@
+{
+  "name": "delta-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for git-delta syntax highlighting",
+  "scripts": {
+    "pack": "npx @anthropic-ai/mcpb pack"
+  },
+  "devDependencies": {
+    "@anthropic-ai/mcpb": "^0.1.0"
+  }
+}
+

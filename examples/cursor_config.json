@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "delta": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/delta-mcp",
+        "run",
+        "server.py"
+      ],
+      "env": {
+        "GIT_CONFIG_GLOBAL": "~/.gitconfig"
+      }
+    }
+  }
+}
+

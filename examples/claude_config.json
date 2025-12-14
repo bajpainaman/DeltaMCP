@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "delta": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/ABSOLUTE/PATH/TO/delta-mcp",
+        "run",
+        "server.py"
+      ]
+    }
+  }
+}
+

@@ -1,0 +1,38 @@
+{
+  "mcpb_version": "0.1",
+  "name": "delta-mcp",
+  "description": "MCP server for git-delta syntax highlighting and diff formatting",
+  "author": {
+    "name": "Delta MCP Contributors",
+    "url": "https://github.com/yourusername/delta-mcp"
+  },
+  "runtime": {
+    "type": "python",
+    "version": "3.10",
+    "command": "uv",
+    "args": ["run", "server.py"]
+  },
+  "user_config": {
+    "delta_path": {
+      "type": "string",
+      "description": "Path to delta executable (default: 'delta' in PATH)",
+      "default": "delta"
+    },
+    "git_config_path": {
+      "type": "string",
+      "description": "Path to Git config file (default: ~/.gitconfig)",
+      "default": "~/.gitconfig"
+    },
+    "delta_pager": {
+      "type": "string",
+      "description": "Custom pager for delta (optional)",
+      "default": ""
+    },
+    "bat_theme": {
+      "type": "string",
+      "description": "Override syntax highlighting theme via BAT_THEME env var (optional)",
+      "default": ""
+    }
+  }
+}
+

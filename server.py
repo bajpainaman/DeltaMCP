@@ -162,8 +162,8 @@ async def format_git_show_cli(
     line_numbers: bool = True
 ) -> str:
     """
-    Format git show output using Delta - CLI only (no browser). 
-    Designed for Claude Code and other CLI-focused clients.
+    Format git show output using Delta - CLI mode with HTML rendering for Claude Code.
+    Converts ANSI codes to HTML so colors display properly in Claude Code.
     
     Args:
         commit_hash: Git commit hash or reference (e.g., "HEAD", "abc123")
@@ -173,10 +173,10 @@ async def format_git_show_cli(
         line_numbers: Show line numbers (default: True)
     
     Returns:
-        Clean terminal-formatted diff output (CLI only, no browser links)
+        HTML-formatted diff output with colors preserved for Claude Code rendering.
     """
-    # Use the same logic as format_git_show but with open_in_browser=False
-    return await format_git_show(
+    # Get the ANSI-formatted output
+    ansi_output = await format_git_show(
         commit_hash=commit_hash,
         file_path=file_path,
         theme=theme,
@@ -184,6 +184,13 @@ async def format_git_show_cli(
         line_numbers=line_numbers,
         open_in_browser=False  # CLI only
     )
+    
+    # Convert ANSI codes to HTML for Claude Code rendering
+    from browser_utils import _ansi_to_html
+    html_output = _ansi_to_html(ansi_output)
+    
+    # Wrap in a simple HTML structure with monospace font for proper display
+    return f'<pre style="font-family: monospace; font-size: 12px; line-height: 1.4; background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 4px; overflow-x: auto;">{html_output}</pre>'
 
 
 @mcp.tool()

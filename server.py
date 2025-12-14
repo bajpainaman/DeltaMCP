@@ -115,8 +115,8 @@ async def format_git_show(
     elif merged_config.get("syntax-theme"):
         # Use theme from user's git config if available
         delta_cmd.extend(["--syntax-theme", merged_config.get("syntax-theme")])
-    # Only use side-by-side if explicitly requested (default is unified like GitHub)
-    if side_by_side or merged_config.get("side-by-side"):
+    # Use side-by-side by default (left/right split view)
+    if side_by_side or merged_config.get("side-by-side", True):
         delta_cmd.append("--side-by-side")
     if line_numbers or merged_config.get("line-numbers", True):
         delta_cmd.append("--line-numbers")
@@ -222,7 +222,7 @@ async def format_git_log(
     elif merged_config.get("syntax-theme"):
         # Use theme from user's git config if available
         delta_cmd.extend(["--syntax-theme", merged_config.get("syntax-theme")])
-    if side_by_side or merged_config.get("side-by-side"):
+    if side_by_side or merged_config.get("side-by-side", True):
         delta_cmd.append("--side-by-side")
     if line_numbers or merged_config.get("line-numbers", True):
         delta_cmd.append("--line-numbers")
@@ -339,7 +339,7 @@ async def format_git_diff(
     elif merged_config.get("syntax-theme"):
         # Use theme from user's git config if available
         delta_cmd.extend(["--syntax-theme", merged_config.get("syntax-theme")])
-    if side_by_side or merged_config.get("side-by-side"):
+    if side_by_side or merged_config.get("side-by-side", True):
         delta_cmd.append("--side-by-side")
     if line_numbers or merged_config.get("line-numbers", True):
         delta_cmd.append("--line-numbers")
@@ -579,7 +579,7 @@ async def format_merge_conflicts(
     elif merged_config.get("syntax-theme"):
         # Use theme from user's git config if available
         delta_cmd.extend(["--syntax-theme", merged_config.get("syntax-theme")])
-    if side_by_side or merged_config.get("side-by-side"):
+    if side_by_side or merged_config.get("side-by-side", True):
         delta_cmd.append("--side-by-side")
     if line_numbers or merged_config.get("line-numbers", True):
         delta_cmd.append("--line-numbers")

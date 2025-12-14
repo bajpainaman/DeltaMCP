@@ -160,10 +160,10 @@ async def format_git_show_cli(
     theme: str | None = None,
     side_by_side: bool = True,
     line_numbers: bool = True
-) -> str:
+) -> dict:
     """
-    Format git show output using Delta - CLI mode with HTML for Claude Code.
-    Converts ANSI codes to HTML so colors display in Claude Code.
+    Format git show output using Delta - CLI mode with ANSI codes for Claude Code.
+    Returns ANSI escape codes that Claude Code's terminal will render with colors.
     
     Args:
         commit_hash: Git commit hash or reference (e.g., "HEAD", "abc123")
@@ -173,9 +173,9 @@ async def format_git_show_cli(
         line_numbers: Show line numbers (default: True)
     
     Returns:
-        HTML-formatted diff output with colors for Claude Code rendering.
+        MCP content array with ANSI-colored text that Claude Code will render.
     """
-    # Get the ANSI-formatted output
+    # Get the ANSI-formatted output (raw ANSI escape codes)
     ansi_output = await format_git_show(
         commit_hash=commit_hash,
         file_path=file_path,
@@ -185,12 +185,15 @@ async def format_git_show_cli(
         open_in_browser=False  # CLI only
     )
     
-    # Convert ANSI codes to HTML for Claude Code rendering
-    from browser_utils import _ansi_to_html
-    html_output = _ansi_to_html(ansi_output)
-    
-    # Return HTML - Claude Code should render it (though it may show as escaped in some views)
-    return html_output
+    # Return in MCP content array format - Claude Code will render ANSI codes
+    return {
+        "content": [
+            {
+                "type": "text",
+                "text": ansi_output
+            }
+        ]
+    }
 
 
 @mcp.tool()
@@ -315,10 +318,10 @@ async def format_git_diff_cli(
     theme: str | None = None,
     side_by_side: bool = True,
     line_numbers: bool = True
-) -> str:
+) -> dict:
     """
-    Format git diff output using Delta - CLI mode with HTML for Claude Code.
-    Converts ANSI codes to HTML so colors display in Claude Code.
+    Format git diff output using Delta - CLI mode with ANSI codes for Claude Code.
+    Returns ANSI escape codes that Claude Code's terminal will render with colors.
     
     Args:
         file_path: Specific file to diff (optional, diffs all if not provided)
@@ -329,9 +332,9 @@ async def format_git_diff_cli(
         line_numbers: Show line numbers (default: True)
     
     Returns:
-        HTML-formatted diff output with colors for Claude Code rendering.
+        MCP content array with ANSI-colored text that Claude Code will render.
     """
-    # Get the ANSI-formatted output
+    # Get the ANSI-formatted output (raw ANSI escape codes)
     ansi_output = await format_git_diff(
         file_path=file_path,
         commit_range=commit_range,
@@ -342,12 +345,15 @@ async def format_git_diff_cli(
         open_in_browser=False  # CLI only
     )
     
-    # Convert ANSI codes to HTML for Claude Code rendering
-    from browser_utils import _ansi_to_html
-    html_output = _ansi_to_html(ansi_output)
-    
-    # Return HTML - Claude Code should render it (though it may show as escaped in some views)
-    return html_output
+    # Return in MCP content array format - Claude Code will render ANSI codes
+    return {
+        "content": [
+            {
+                "type": "text",
+                "text": ansi_output
+            }
+        ]
+    }
 
 
 @mcp.tool()

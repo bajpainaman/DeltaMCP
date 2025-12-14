@@ -57,7 +57,8 @@ async def format_git_show(
     theme: str | None = None,
     side_by_side: bool = True,  # Default: side-by-side diff format (left/right split)
     line_numbers: bool = True,
-    open_in_browser: bool = True
+    open_in_browser: bool = True,
+    cli_mode: bool = False  # If True, returns CLI-only output (no browser links)
 ) -> str:
     """
     Format git show output using Delta with syntax highlighting. 
@@ -67,12 +68,13 @@ async def format_git_show(
         commit_hash: Git commit hash or reference (e.g., "HEAD", "abc123")
         file_path: Specific file to show (optional)
         theme: Syntax highlighting theme (optional - any bat/delta theme name, uses your config default if not specified)
-        side_by_side: Enable side-by-side diff view
-        line_numbers: Show line numbers
+        side_by_side: Enable side-by-side diff view (default: True)
+        line_numbers: Show line numbers (default: True)
         open_in_browser: If True (default), includes clickable browser links; if False, returns only formatted text
+        cli_mode: If True, returns CLI-only output with no browser links (overrides open_in_browser)
     
     Returns:
-        Clean terminal-formatted diff output with browser links (if open_in_browser=True) or plain formatted text
+        Clean terminal-formatted diff output. If cli_mode=True, returns pure CLI output with no browser links.
     """
     if not await ensure_delta_available():
         return "Error: Delta not installed. Install with: cargo install git-delta"
@@ -124,6 +126,10 @@ async def format_git_show(
     # Execute: git show | delta
     from delta_wrapper import execute_git_then_delta
     formatted_output = await execute_git_then_delta(git_cmd, delta_cmd)
+    
+    # CLI mode overrides browser mode
+    if cli_mode:
+        return formatted_output
     
     # If browser link requested, create and return URL with terminal hyperlink
     if open_in_browser:
@@ -344,7 +350,8 @@ async def format_git_diff(
     light: bool = False,
     max_line_length: int | None = None,
     max_line_distance: int | None = None,
-    open_in_browser: bool = True
+    open_in_browser: bool = True,
+    cli_mode: bool = False  # If True, returns CLI-only output (no browser links)
 ) -> str:
     """
     Format git diff output using Delta with syntax highlighting. 
@@ -356,12 +363,13 @@ async def format_git_diff(
         commit_range: Git commit range (e.g., "HEAD~1..HEAD" or "abc123..def456")
         staged: If True, show staged changes; if False, show unstaged
         theme: Syntax highlighting theme (optional - any bat/delta theme name, uses your config default if not specified)
-        side_by_side: Enable side-by-side diff view
-        line_numbers: Show line numbers
+        side_by_side: Enable side-by-side diff view (default: True)
+        line_numbers: Show line numbers (default: True)
         open_in_browser: If True (default), includes clickable browser links; if False, returns only formatted text
+        cli_mode: If True, returns CLI-only output with no browser links (overrides open_in_browser)
     
     Returns:
-        Clean terminal-formatted diff output with browser links (if open_in_browser=True) or plain formatted text
+        Clean terminal-formatted diff output. If cli_mode=True, returns pure CLI output with no browser links.
     """
     if not await ensure_delta_available():
         return "Error: Delta not installed. Install with: cargo install git-delta"

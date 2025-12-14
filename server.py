@@ -438,6 +438,10 @@ async def format_git_diff(
     from delta_wrapper import execute_git_then_delta
     formatted_output = await execute_git_then_delta(git_cmd, delta_cmd)
     
+    # CLI mode overrides browser mode
+    if cli_mode:
+        return formatted_output
+    
     # If browser link requested, create and return URL
     if open_in_browser:
         title = "Git Diff"

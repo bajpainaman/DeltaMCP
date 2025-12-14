@@ -30,6 +30,23 @@ The key thing to remember is to use absolute paths, not relative ones. On Window
 
 Once configured, you can use natural language to interact with the server through your AI assistant. Ask it to show you the formatted diff for a specific commit, format the git log with patches, search for patterns in your codebase, or compare two files. The server handles all the formatting automatically.
 
+### Quick Examples for Claude
+
+**Basic usage:**
+- "Show me the diff for the last commit"
+- "Format the git diff for server.py"
+- "What changed in HEAD~1?"
+
+**CLI mode (no browser links):**
+- "Show me the diff in CLI mode"
+- "Use CLI mode to show the last commit"
+
+**Browser mode (with clickable links):**
+- "Show me the diff and open it in browser"
+- "Format the diff with browser links"
+
+See [USAGE.md](USAGE.md) for detailed examples and all available tools.
+
 The server provides several tools that your AI assistant can use. These include formatting git diffs, showing commit details, displaying git log with patches, showing blame information, formatting grep results, displaying merge conflicts, syntax highlighting code snippets, and comparing files directly.
 
 There are also resources available that provide direct access to formatted data. You can access formatted diffs for specific commits, blame information for files, grep results for patterns, your current delta configuration, and a list of available syntax themes.

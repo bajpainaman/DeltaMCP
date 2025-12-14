@@ -148,6 +148,39 @@ async def format_git_show(
 
 
 @mcp.tool()
+async def format_git_show_cli(
+    commit_hash: str,
+    file_path: str | None = None,
+    theme: str | None = None,
+    side_by_side: bool = True,
+    line_numbers: bool = True
+) -> str:
+    """
+    Format git show output using Delta - CLI only (no browser). 
+    Designed for Claude Code and other CLI-focused clients.
+    
+    Args:
+        commit_hash: Git commit hash or reference (e.g., "HEAD", "abc123")
+        file_path: Specific file to show (optional)
+        theme: Syntax highlighting theme (optional - uses your config default if not specified)
+        side_by_side: Enable side-by-side diff view (default: True)
+        line_numbers: Show line numbers (default: True)
+    
+    Returns:
+        Clean terminal-formatted diff output (CLI only, no browser links)
+    """
+    # Use the same logic as format_git_show but with open_in_browser=False
+    return await format_git_show(
+        commit_hash=commit_hash,
+        file_path=file_path,
+        theme=theme,
+        side_by_side=side_by_side,
+        line_numbers=line_numbers,
+        open_in_browser=False  # CLI only
+    )
+
+
+@mcp.tool()
 async def format_git_log(
     limit: int = 10,
     author: str | None = None,
@@ -259,6 +292,41 @@ async def format_git_log(
         return format_with_terminal_link(formatted_output, browser_url, title)
     
     return formatted_output
+
+
+@mcp.tool()
+async def format_git_diff_cli(
+    file_path: str | None = None,
+    commit_range: str | None = None,
+    staged: bool = False,
+    theme: str | None = None,
+    side_by_side: bool = True,
+    line_numbers: bool = True
+) -> str:
+    """
+    Format git diff output using Delta - CLI only (no browser).
+    Designed for Claude Code and other CLI-focused clients.
+    
+    Args:
+        file_path: Specific file to diff (optional, diffs all if not provided)
+        commit_range: Git commit range (e.g., "HEAD~1..HEAD" or "abc123..def456")
+        staged: If True, show staged changes; if False, show unstaged
+        theme: Syntax highlighting theme (optional - uses your config default if not specified)
+        side_by_side: Enable side-by-side diff view (default: True)
+        line_numbers: Show line numbers (default: True)
+    
+    Returns:
+        Clean terminal-formatted diff output (CLI only, no browser links)
+    """
+    return await format_git_diff(
+        file_path=file_path,
+        commit_range=commit_range,
+        staged=staged,
+        theme=theme,
+        side_by_side=side_by_side,
+        line_numbers=line_numbers,
+        open_in_browser=False  # CLI only
+    )
 
 
 @mcp.tool()

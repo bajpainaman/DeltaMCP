@@ -134,11 +134,9 @@ def _ansi_to_html(ansi_text: str) -> str:
 
 
 def _create_html_page(title: str, content: str, theme: str | None = None) -> str:
-    """Create a complete HTML page."""
-    # Default to dark theme for HTML (delta's ANSI colors are already applied)
-    # The theme parameter here is just for HTML page styling, not delta's syntax highlighting
-    bg_color = "#1e1e1e"  # Dark background to match delta's typical output
-    text_color = "#d4d4d4"  # Light text for readability
+    """Create a minimal, functional HTML page - purely functional, no project styling."""
+    bg_color = "#1e1e1e"
+    text_color = "#d4d4d4"
     
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -147,31 +145,12 @@ def _create_html_page(title: str, content: str, theme: str | None = None) -> str
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{html.escape(title)}</title>
     <style>
-        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: monospace;
             background: {bg_color};
             color: {text_color};
-            padding: 20px;
-            line-height: 1.6;
-        }}
-        .container {{
-            max-width: 1400px;
-            margin: 0 auto;
-        }}
-        h1 {{
-            border-bottom: 2px solid #444;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }}
-        .meta {{
-            background: #2d2d2d;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #007acc;
-            font-size: 14px;
+            margin: 0;
+            padding: 10px;
         }}
         pre {{
             margin: 0;
@@ -179,13 +158,7 @@ def _create_html_page(title: str, content: str, theme: str | None = None) -> str
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>{html.escape(title)}</h1>
-        <div class="meta">
-            <strong>Delta MCP Server</strong> - Formatted with git-delta
-        </div>
-        {content}
-    </div>
+    {content}
 </body>
 </html>"""
 

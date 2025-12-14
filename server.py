@@ -55,7 +55,7 @@ async def format_git_show(
     commit_hash: str,
     file_path: str | None = None,
     theme: str | None = None,
-    side_by_side: bool = False,  # Default: unified diff format (like GitHub)
+    side_by_side: bool = True,  # Default: side-by-side diff format (left/right split)
     line_numbers: bool = True,
     open_in_browser: bool = True
 ) -> str:
@@ -155,7 +155,7 @@ async def format_git_log(
     until: str | None = None,
     file_path: str | None = None,
     theme: str | None = None,
-    side_by_side: bool = False,
+    side_by_side: bool = True,  # Default: side-by-side format (left/right split)
     line_numbers: bool = True,
     hyperlinks: bool = False,
     width: int | None = None,
@@ -267,7 +267,7 @@ async def format_git_diff(
     commit_range: str | None = None,
     staged: bool = False,
     theme: str | None = None,
-    side_by_side: bool = False,
+    side_by_side: bool = True,  # Default: side-by-side format (left/right split)
     line_numbers: bool = True,
     hyperlinks: bool = False,
     width: int | None = None,
@@ -530,7 +530,7 @@ async def format_grep_results(
 async def format_merge_conflicts(
     file_path: str | None = None,
     theme: str | None = None,
-    side_by_side: bool = False,
+    side_by_side: bool = True,  # Default: side-by-side format (left/right split)
     line_numbers: bool = True
 ) -> str:
     """
@@ -646,7 +646,7 @@ async def open_diff_in_browser(
     commit_hash: str | None = None,
     file_path: str | None = None,
     theme: str | None = None,
-    side_by_side: bool = False,
+    side_by_side: bool = True,  # Default: side-by-side format (left/right split)
     line_numbers: bool = True
 ) -> str:
     """
@@ -728,7 +728,7 @@ async def compare_files(
     file1_path: str,
     file2_path: str,
     theme: str | None = None,
-    side_by_side: bool = False,
+    side_by_side: bool = True,  # Default: side-by-side format (left/right split)
     line_numbers: bool = True
 ) -> str:
     """

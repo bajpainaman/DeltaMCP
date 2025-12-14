@@ -186,11 +186,9 @@ async def format_git_show_cli(
     )
     
     # Convert ANSI codes to HTML for Claude Code rendering
+    # _ansi_to_html already wraps in <pre> tag, so use it directly
     from browser_utils import _ansi_to_html
-    html_output = _ansi_to_html(ansi_output)
-    
-    # Wrap in a simple HTML structure with monospace font for proper display
-    return f'<pre style="font-family: monospace; font-size: 12px; line-height: 1.4; background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 4px; overflow-x: auto;">{html_output}</pre>'
+    return _ansi_to_html(ansi_output)
 
 
 @mcp.tool()
@@ -343,11 +341,9 @@ async def format_git_diff_cli(
     )
     
     # Convert ANSI codes to HTML for Claude Code rendering
+    # _ansi_to_html already wraps in <pre> tag, so use it directly
     from browser_utils import _ansi_to_html
-    html_output = _ansi_to_html(ansi_output)
-    
-    # Wrap in a simple HTML structure with monospace font for proper display
-    return f'<pre style="font-family: monospace; font-size: 12px; line-height: 1.4; background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 4px; overflow-x: auto;">{html_output}</pre>'
+    return _ansi_to_html(ansi_output)
 
 
 @mcp.tool()
